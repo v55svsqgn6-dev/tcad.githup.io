@@ -371,23 +371,38 @@
             <div class="tagline">实力背书 信誉保障</div>
             <div class="company-name">无需注册 点开即玩</div>
         </div>
-        </div>
-        </div>
-        </div>
         <!-- 认证区域 -->
-        <div class="auth-section">
-            <div class="auth-info">
-                欢迎使用本Wi-Fi网络<br>
-                一键认证，免费上网
-            </div>
-            
-            <!-- 认证按钮 -->
-            <button class="auth-button" id="authButton">
-                立即认证上网
-            </button>
-            
-            <div class="status-message" id="statusMessage"></div>
-        </div>
+<div class="auth-section">
+    <div class="auth-info">欢迎使用本Wi-Fi网络<br>一键认证，免费上网</div>
+    
+    <!-- 二维码容器 -->
+    <div class="qr-placeholder">
+        <div class="qr-icon">📱</div>
+        <div>扫描二维码</div>
+    </div>
+
+    <!-- 新增的间距元素 -->
+    <div class="button-spacer"></div>
+    
+    <!-- 认证按钮 -->
+    <button class="auth-button" id="authButton">立即认证上网</button>
+    <div class="status-message" id="statusMessage"></div>
+</div>
+
+<style>
+    /* 其他现有样式保持不变... */
+
+    /* 新增的间距样式 */
+    .button-spacer {
+        height: 40px; /* 核心：通过调整这个值来移动按钮位置 */
+        width: 100%;
+    }
+
+    /* 您原有的按钮样式 */
+    .auth-button {
+        /* 您原有的样式，例如 background, color, padding 等保持不变 */
+    }
+</style>
         
         <!-- 新人首存 -->
         <div class="section-title">新人首存</div>
