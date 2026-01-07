@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>唐潮国际KTV - Wi-Fi认证</title>
+    <style>
+        /* 全局样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            color: white;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* 使用您提供的图片作为背景 */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('background.jpg'); /* tcad.jpg */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: -2;
+        }
+
+        /* 深色遮罩层，确保文字在任意背景图上都清晰可读 */
+        body::after {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: -1;
+        }
+        
+        /* 主容器 */
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px 15px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        /* 顶部装饰 */
+        .header {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        
+        .mic-icon {
+            font-size: 40px;
+            color: #FFD700;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+        
+        .main-title {
+            font-size: 26px;
+            font-weight: bold;
+            color: #FFD700;
+            margin-bottom: 5px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        .sub-title {
+            font-size: 18px;
+            color: #FFD700;
+            margin-bottom: 10px;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+        }
+        
+        .tagline {
+            font-size: 15px;
+            color: #FFD700;
+            background: rgba(255, 215, 0, 0.15);
+            padding: 8px 15px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-bottom: 8px;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+        }
+        
+        .company-name {
+            font-size: 16px;
+            color: #FFD700;
+            font-weight: bold;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+        }
+        
+        /* 认证区域 */
+        .auth-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px 20px;
+            text-align: center;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        .auth-info {
+            font-size: 16px;
+            color: #FFD700;
+            margin-bottom: 20px;
+            line-height: 1.5;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+        }
+        
+        /* 认证按钮 - 绿色 */
+        .auth-button {
+            background: linear-gradient(135deg, #4CAF50, #2E7D32);
+            color: white;
+            border: none;
+            padding: 16px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 30px;
+            cursor: pointer;
+            width: 100%;
+            max-width: 280px;
+            margin: 0 auto;
+            display: block;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+            transition: all 0.3s ease;
+        }
+        
+        .auth-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.6);
+        }
+        
+        .auth-button:active {
+            transform: translateY(0);
+        }
+        
+        .auth-button:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .status-message {
+            margin-top: 15px;
+            font-size: 14px;
+            color: #FFD700;
+            min-height: 20px;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        /* 优惠信息 */
+        .section-title {
+            color: #FFD700;
+            font-size: 18px;
+            margin-bottom: 12px;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+        }
+        
+        .coupon-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .coupon-card {
+            background: linear-gradient(135deg, rgba(106, 13, 173, 0.8), rgba(138, 43, 226, 0.8));
+            border-radius: 10px;
+            padding: 15px 10px;
+            text-align: center;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .coupon-card.highlight {
+            background: linear-gradient(135deg, rgba(255, 140, 0, 0.9), rgba(255, 69, 0, 0.9));
+            border-color: rgba(255, 215, 0, 0.5);
+        }
+        
+        .coupon-amount {
+            font-size: 16px;
+            font-weight: bold;
+            color: #FFD700;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+        }
+        
+        .coupon-desc {
+            font-size: 12px;
+            margin-top: 5px;
+            opacity: 0.9;
+        }
+        
+        /* 游戏区域 */
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .game-item {
+            background: rgba(255, 215, 0, 0.1);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 8px;
+            padding: 12px 8px;
+            text-align: center;
+            font-size: 13px;
+            transition: all 0.3s ease;
+        }
+        
+        .game-item:hover {
+            background: rgba(255, 215, 0, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        /* 安全区域 */
+        .security-badge {
+            display: inline-block;
+            background: rgba(0, 128, 0, 0.2);
+            backdrop-filter: blur(5px);
+            color: #90ee90;
+            padding: 12px 25px;
+            border-radius: 20px;
+            font-size: 16px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(0, 128, 0, 0.3);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+        }
+        
+        /* 合作伙伴 */
+        .partners-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+        
+        .partner-item {
+            background: rgba(138, 43, 226, 0.2);
+            backdrop-filter: blur(5px);
+            border-radius: 8px;
+            padding: 10px 5px;
+            text-align: center;
+            font-size: 13px;
+            border: 1px solid rgba(138, 43, 226, 0.3);
+        }
+        
+        .partner-note {
+            background: rgba(255, 215, 0, 0.1);
+            backdrop-filter: blur(5px);
+            color: #FFD700;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 13px;
+            margin-top: 10px;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+        }
+        
+        /* 移动端优化 */
+        @media (max-width: 480px) {
+            .container {
+                padding: 15px 12px;
+                gap: 15px;
+            }
+            
+            .main-title {
+                font-size: 22px;
+            }
+            
+            .sub-title {
+                font-size: 16px;
+            }
+            
+            .auth-section {
+                padding: 20px 15px;
+            }
+            
+            .auth-button {
+                font-size: 16px;
+                padding: 14px 25px;
+            }
+            
+            .coupon-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+            
+            .games-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .partners-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* 认证状态层 */
+        .auth-status-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .status-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 215, 0, 0.3);
+            border-top-color: #FFD700;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .status-text {
+            color: #FFD700;
+            font-size: 18px;
+            text-align: center;
+            margin-bottom: 10px;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <!-- 认证状态层 -->
+    <div class="auth-status-layer" id="authStatusLayer">
+        <div class="status-spinner"></div>
+        <div class="status-text" id="statusText">正在认证，请稍候...</div>
+    </div>
+
+    <!-- 主容器 -->
+    <div class="container">
+        <!-- 顶部装饰 -->
+        <div class="header">
+            <div class="mic-icon">🎤</div>
+            <h1 class="main-title">唐潮国际KTV</h1>
+            <h2 class="sub-title">U86娱乐综合盘</h2>
+            <div class="tagline">实力背书 信誉保障</div>
+            <div class="company-name">无需注册 点开即玩</div>
+        </div>
+        
+        <!-- 认证区域 -->
+        <div class="auth-section">
+            <div class="auth-info">
+                欢迎使用本Wi-Fi网络<br>
+                一键认证，免费上网
+            </div>
+            
+            <!-- 认证按钮 -->
+            <button class="auth-button" id="authButton">
+                立即认证上网
+            </button>
+            
+            <div class="status-message" id="statusMessage"></div>
+        </div>
+        
+        <!-- 新人首存 -->
+        <div class="section-title">新人首存</div>
+        <div class="coupon-grid">
+            <div class="coupon-card">
+                <div class="coupon-amount">100送38</div>
+                <div class="coupon-desc">首存礼金</div>
+            </div>
+            <div class="coupon-card highlight">
+                <div class="coupon-amount">最高赠送18888U</div>
+                <div class="coupon-desc">超级大奖</div>
+            </div>
+            <div class="coupon-card">
+                <div class="coupon-amount">每日首存300+送25%</div>
+                <div class="coupon-desc">每日福利</div>
+            </div>
+        </div>
+        
+        <!-- 游戏玩法 -->
+        <div class="section-title">游戏玩法</div>
+        <div class="games-grid">
+            <div class="game-item">德信百家乐</div>
+            <div class="game-item">PG电子转转</div>
+            <div class="game-item">港澳六合彩</div>
+            <div class="game-item">加拿大28</div>
+            <div class="game-item">CP彩票</div>
+            <div class="game-item">3D电子捕鱼</div>
+        </div>
+        
+        <!-- 资金安全 -->
+        <div class="section-title">资  金  安  全</div>
+        <div class="security-badge">实力雄厚  秒充秒提</div>
+        
+        <!-- 联营单位 -->
+        <div class="section-title">联营单位</div>
+        <div class="partners-grid">
+            <div class="partner-item">金边宝马汇</div>
+            <div class="partner-item">戈公唐潮国际</div>
+            <div class="partner-item">手佳集团</div>
+            <div class="partner-item">西港丽豪赌场</div>
+            <div class="partner-item">西港丽豪酒店</div>
+        </div>
+        <div class="partner-note">以上联营单位可线下预约存取</div>
+    </div>
+    <script>
+        // iKuai一键认证接口（type=7代表一键认证）[3,6](@ref)
+        const IKUAII_AUTH_URL = "http://portal.ikuai8-wifi.com/Action/webauth-up?type=7";
+        
+        // 页面元素
+        const authButton = document.getElementById('authButton');
+        const statusMessage = document.getElementById('statusMessage');
+        
+        // 执行iKuai一键认证
+        function performIkuaiaiAuth() {
+            statusMessage.textContent = "正在启动认证流程...";
+            authButton.disabled = true;
+            
+            // 跳转到iKuai一键认证接口[3,6](@ref)
+            // iKuai路由器认证成功后会自动跳转到在云平台设置的"认证成功后跳转至"的URL
+           https://t.me/u86Robot?start=1257;
+            
+            // 设置超时检测，如果认证跳转失败，提示用户
+            setTimeout(() => {
+                if (!document.hidden) {
+                    statusMessage.textContent = "认证跳转中，如长时间未响应请检查网络连接或尝试重新点击认证。";
+                    authButton.disabled = false;
+                }
+            }, 5000);
+        }
+        
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', function() {
+            // 绑定认证按钮点击事件
+            authButton.addEventListener('click', performIkuaiaiAuth);
+        });
+    </script>
+</body>
+</html>
+         
